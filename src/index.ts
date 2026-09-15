@@ -1,6 +1,9 @@
+import { readConfig, setConfig } from "./lib/config.js";
 
 const main = () => {
-  console.log("Hello World!");
+  setConfig("adamakram2");
+  const config = readConfig();
+  console.log(config);
 }
 
 main();
