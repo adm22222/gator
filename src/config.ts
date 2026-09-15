@@ -9,10 +9,10 @@ type Config = {
 }
 
 
-export const setUser = async (username: string) => {
-    const file = await readConfig();
+export const setUser = (username: string) => {
+    const file = readConfig();
     file.currentUserName = username;
-    await writeConfig(file);
+    writeConfig(file);
 }
 
 
