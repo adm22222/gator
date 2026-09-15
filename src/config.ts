@@ -4,8 +4,8 @@ import path from "path";
 
 
 type Config = {
-    dbUrl: String;
-    currentUserName?: String;
+    dbUrl: string;
+    currentUserName?: string;
 }
 
 
