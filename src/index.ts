@@ -1,8 +1,6 @@
-import { CommandsRegistry, registerCommand, runCommand } from "./commands/index.js";
-import { handlerLogin } from "./commands/login.js";
+import { createCommandsRegistry, runCommand } from "./commands/index.js";
 
-const main = () => {
-
+const main = async () => {
   const args = process.argv.slice(2);
   if (args.length === 0) {
     console.error("No command provided");
@@ -11,11 +9,10 @@ const main = () => {
 
   const cmdName = args[0];
   const cmdArgs = args.slice(1);
-  const registry: CommandsRegistry = {};
-  registerCommand(registry, "login", handlerLogin);
+  const registry = createCommandsRegistry();
 
   try {
-    runCommand(registry, cmdName, ...cmdArgs);
+    await runCommand(registry, cmdName, ...cmdArgs);
   } catch (error) {
     if (error instanceof Error) {
       console.error(`Error running command ${cmdName}: ${error.message}`);
@@ -24,6 +21,7 @@ const main = () => {
     }
     process.exit(1);
   }
-}
+  process.exit(0);
+};
 
 main();
