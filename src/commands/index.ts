@@ -1,3 +1,4 @@
+import { handlerAgg } from "./agg.js";
 import { handlerLogin } from "./login.js";
 import { handlerRegister } from "./register.js";
 import { handlerReset } from "./reset.js";
@@ -26,6 +27,7 @@ export const createCommandsRegistry = (): CommandsRegistry => {
     registerCommand(registry, "register", handlerRegister);
     registerCommand(registry, "reset", handlerReset);
     registerCommand(registry, "users", handlerUsers);
+    registerCommand(registry, "agg", handlerAgg);
 
     return registry;
 };
