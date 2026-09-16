@@ -1,6 +1,6 @@
 import { deleteUsers } from "../db/queries/users.js";
 
-export const handleReset = async (cmdName: string, ...args: string[]) => {
+export const handlerReset = async (cmdName: string, ...args: string[]) => {
     if (args.length !== 0) {
         throw new Error(`usage: ${cmdName}`);
     }

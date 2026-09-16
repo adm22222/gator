@@ -1,7 +1,7 @@
 import { setUser } from "../config.js";
 import { createUser, getUserByName } from "../db/queries/users.js";
 
-export const handleRegister = async (
+export const handlerRegister = async (
     cmdName: string,
     ...args: string[]
 ) => {
@@ -17,7 +17,7 @@ export const handleRegister = async (
         throw new Error(`User ${username} already exists`);
     }
 
-    const user = await createUser(username);
+    await createUser(username);
 
     setUser(username);
 

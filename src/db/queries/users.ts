@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "../index.js";
-import { users } from "../schema.js";
+import { User, users } from "../schema.js";
 
 export const createUser = async (name: string) => {
     const [user] = await db
@@ -24,4 +24,9 @@ export const getUserByName = async (name: string) => {
 
 export const deleteUsers = async () => {
     await db.delete(users).execute();
+}
+
+export const getAllUsers = async (): Promise<User[]> => {
+    const usersData = await db.select().from(users).execute();
+    return usersData;
 }
