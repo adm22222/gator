@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../index.js";
 import { users } from "../schema.js";
 
-export async function createUser(name: string) {
+export const createUser = async (name: string) => {
     const [user] = await db
         .insert(users)
         .values({ name })
@@ -12,7 +12,7 @@ export async function createUser(name: string) {
     return user;
 }
 
-export async function getUserByName(name: string) {
+export const getUserByName = async (name: string) => {
     const [user] = await db
         .select()
         .from(users)

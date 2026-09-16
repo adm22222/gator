@@ -1,10 +1,10 @@
 import { setUser } from "../config.js";
 import { createUser, getUserByName } from "../db/queries/users.js";
 
-export async function handleRegister(
+export const handleRegister = async (
     cmdName: string,
     ...args: string[]
-) {
+) => {
     if (args.length !== 1) {
         throw new Error(`usage: ${cmdName} <name>`);
     }
