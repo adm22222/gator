@@ -1,3 +1,8 @@
+import { handlerLogin } from "./login.js";
+import { handlerRegister } from "./register.js";
+import { handlerReset } from "./reset.js";
+import { handlerUsers } from "./users.js";
+
 export type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 
 export type CommandsRegistry = Record<string, CommandHandler>;
@@ -13,3 +18,14 @@ export const runCommand = async (registry: CommandsRegistry, cmdName: string, ..
     }
     await handler(cmdName, ...args);
 }
+
+export const createCommandsRegistry = (): CommandsRegistry => {
+    const registry: CommandsRegistry = {};
+
+    registerCommand(registry, "login", handlerLogin);
+    registerCommand(registry, "register", handlerRegister);
+    registerCommand(registry, "reset", handlerReset);
+    registerCommand(registry, "users", handlerUsers);
+
+    return registry;
+};
