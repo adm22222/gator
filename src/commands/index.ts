@@ -2,6 +2,7 @@ import { User } from "../db/schema.js";
 import { middlewareLoggedIn } from "../middleware.js";
 import { handlerAddFeed } from "./addfeed.js";
 import { handlerAgg } from "./agg.js";
+import { handlerBrowse } from "./browse.js";
 import { handlerFeeds } from "./feeds.js";
 import { handlerFollow, handlerUnfollow } from "./follow.js";
 import { handlerFollowing } from "./following.js";
@@ -41,6 +42,7 @@ export const createCommandsRegistry = (): CommandsRegistry => {
     registerCommand(registry, "follow", middlewareLoggedIn(handlerFollow));
     registerCommand(registry, "unfollow", middlewareLoggedIn(handlerUnfollow));
     registerCommand(registry, "following", middlewareLoggedIn(handlerFollowing));
+    registerCommand(registry, "browse", middlewareLoggedIn(handlerBrowse));
 
     return registry;
 };

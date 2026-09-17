@@ -28,4 +28,9 @@ export const handlerAgg = async (cmdName: string, ...args: string[]) => {
 
 const handleError = (error: unknown) => {
     console.error("Error scraping feeds:", error);
+
+    if (error instanceof Error) {
+        console.error("Message:", error.message);
+        console.error("Cause:", error.cause);
+    }
 };
