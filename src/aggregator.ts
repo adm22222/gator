@@ -2,6 +2,7 @@ import {
     getNextFeedToFetch,
     markFeedFetched,
 } from "./db/queries/feeds.js";
+import { createPost } from "./db/queries/posts.js";
 import { fetchFeed } from "./rrs/index.js";
 
 export const scrapeFeeds = async () => {
@@ -18,6 +19,16 @@ export const scrapeFeeds = async () => {
     await markFeedFetched(feed.id);
 
     for (const item of rssFeed.channel.item) {
-        console.log(`* ${item.title}`);
+        const publishedAt = new Date(item.pubDate);
+
+        await createPost(
+            item.title,
+            item.link,
+            item.description,
+            Number.isNaN(publishedAt.getTime())
+                ? null
+                : publishedAt,
+            feed.id
+        );
     }
 };
