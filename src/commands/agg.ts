@@ -1,11 +1,31 @@
-import { fetchFeed } from "../rrs/index.js";
+import { scrapeFeeds } from "../aggregator.js";
+import { parseDuration } from "../lib/duration.js";
 
+export const handlerAgg = async (cmdName: string, ...args: string[]) => {
+    if (args.length !== 1) {
+        throw new Error(`usage: ${cmdName} <time_between_reqs>`);
+    }
+    const timeArg = args[0];
+    const timeBetweenRequests = parseDuration(timeArg);
 
+    console.log(`Collecting feeds every ${timeArg}`);
 
-export const handlerAgg = async (_: string) => {
-    const feedURL = "https://www.wagslane.dev/index.xml";
+    await scrapeFeeds().catch(handleError);
 
-    const feedData = await fetchFeed(feedURL);
-    const feedDataStr = JSON.stringify(feedData, null, 2);
-    console.log(feedDataStr);
-}
+    const interval = setInterval(() => {
+        scrapeFeeds().catch(handleError);
+    }, timeBetweenRequests);
+
+    await new Promise<void>((resolve) => {
+        process.on("SIGINT", () => {
+            console.log("Shutting down feed aggregator...");
+
+            clearInterval(interval);
+            resolve();
+        });
+    });
+};
+
+const handleError = (error: unknown) => {
+    console.error("Error scraping feeds:", error);
+};
