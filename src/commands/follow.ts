@@ -24,3 +24,19 @@ export const handlerFollow = async (
 
     console.log(`${feedFollow.userName} is now following ${feedFollow.feedName}`);
 };
+
+export const handlerUnfollow = async (
+    cmdName: string,
+    user: User,
+    ...args: string[]
+) => {
+    if (args.length !== 1) {
+        throw new Error(`usage: ${cmdName} <url>`);
+    }
+
+    const [url] = args;
+
+    await deleteFeedFollow(user.id, url);
+
+    console.log(`Unfollowed ${url}`);
+};

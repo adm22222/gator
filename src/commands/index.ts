@@ -3,7 +3,7 @@ import { middlewareLoggedIn } from "../middleware.js";
 import { handlerAddFeed } from "./addfeed.js";
 import { handlerAgg } from "./agg.js";
 import { handlerFeeds } from "./feeds.js";
-import { handlerFollow } from "./follow.js";
+import { handlerFollow, handlerUnfollow } from "./follow.js";
 import { handlerFollowing } from "./following.js";
 import { handlerLogin } from "./login.js";
 import { handlerRegister } from "./register.js";
@@ -39,6 +39,8 @@ export const createCommandsRegistry = (): CommandsRegistry => {
     registerCommand(registry, "addfeed", middlewareLoggedIn(handlerAddFeed));
     registerCommand(registry, "feeds", handlerFeeds);
     registerCommand(registry, "follow", middlewareLoggedIn(handlerFollow));
+    registerCommand(registry, "unfollow", middlewareLoggedIn(handlerUnfollow));
     registerCommand(registry, "following", middlewareLoggedIn(handlerFollowing));
+
     return registry;
 };
