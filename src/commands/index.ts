@@ -1,6 +1,7 @@
 import { handlerAddFeed } from "./addfeed.js";
 import { handlerAgg } from "./agg.js";
 import { handlerFeeds } from "./feeds.js";
+import { handlerFollow } from "./follow.js";
 import { handlerLogin } from "./login.js";
 import { handlerRegister } from "./register.js";
 import { handlerReset } from "./reset.js";
@@ -32,5 +33,6 @@ export const createCommandsRegistry = (): CommandsRegistry => {
     registerCommand(registry, "agg", handlerAgg);
     registerCommand(registry, "addfeed", handlerAddFeed);
     registerCommand(registry, "feeds", handlerFeeds);
+    registerCommand(registry, "follow", handlerFollow);
     return registry;
 };

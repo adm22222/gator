@@ -18,3 +18,32 @@ export const getAllFeeds = async () => {
     }).from(feeds).innerJoin(users, eq(feeds.userId, users.id)).execute();
     return feedsData;
 }
+export const createFeedFollow = async (userId: string, feedId: string) => {
+    const [feedFollow] = await db
+        .insert(feedFollows)
+        .values({
+            userId,
+            feedId,
+        })
+        .returning();
+
+    const result = await db
+        .select({
+            id: feedFollows.id,
+            userId: feedFollows.userId,
+            feedId: feedFollows.feedId,
+            userName: users.name,
+            feedName: feeds.name,
+        })
+        .from(feedFollows)
+        .innerJoin(users, eq(feedFollows.userId, users.id))
+        .innerJoin(feeds, eq(feedFollows.feedId, feeds.id))
+        .where(eq(feedFollows.id, feedFollow.id));
+
+    return result[0];
+};
+
+export const getFeedbyURL = async (url: string) => {
+    const [data] = await db.select().from(feeds).where(eq(feeds.url, url)).limit(1);
+    return data;
+}
