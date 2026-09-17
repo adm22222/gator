@@ -1,28 +1,20 @@
-import { readConfig } from "../config.js";
 import {
     createFeedFollow,
+    deleteFeedFollow,
     getFeedbyURL,
 } from "../db/queries/feeds.js";
-import { getUserByName } from "../db/queries/users.js";
+import { User } from "../db/schema.js";
 
 export const handlerFollow = async (
     cmdName: string,
+    user: User,
     ...args: string[]
 ) => {
     if (args.length !== 1) {
         throw new Error(`usage: ${cmdName} <url>`);
     }
     const [url] = args;
-    const config = readConfig();
-    if (!config.currentUserName) {
-        throw new Error("No current user set. Please login first.");
-    }
-    const user = await getUserByName(
-        config.currentUserName
-    );
-    if (!user) {
-        throw new Error(`User ${config.currentUserName} not found`);
-    }
+
     const feed = await getFeedbyURL(url);
     if (!feed) {
         throw new Error(`Feed with URL ${url} not found`);
