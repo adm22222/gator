@@ -1,20 +1,94 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "../index.js"
-import { feed, users } from "../schema.js"
+import { feeds, feedFollows, users } from "../schema.js"
 
 
 export const createFeed = async (name: string, url: string, userId: string) => {
-    const [feedData] = await db.insert(feed).values({ name, url, userId }).returning();
+    const [feedData] = await db.insert(feeds).values({ name, url, userId }).returning();
     return feedData;
 }
 
 export const getAllFeeds = async () => {
     const feedsData = await db.select({
-        id: feed.id,
-        name: feed.name,
-        url: feed.url,
-        userId: feed.userId,
+        id: feeds.id,
+        name: feeds.name,
+        url: feeds.url,
+        userId: feeds.userId,
         userName: users.name,
-    }).from(feed).innerJoin(users, eq(feed.userId, users.id)).execute();
+    }).from(feeds).innerJoin(users, eq(feeds.userId, users.id)).execute();
     return feedsData;
 }
+
+export const createFeedFollow = async (userId: string, feedId: string) => {
+    const [feedFollow] = await db
+        .insert(feedFollows)
+        .values({
+            userId,
+            feedId,
+        })
+        .returning();
+
+    const result = await db
+        .select({
+            id: feedFollows.id,
+            userId: feedFollows.userId,
+            feedId: feedFollows.feedId,
+            userName: users.name,
+            feedName: feeds.name,
+        })
+        .from(feedFollows)
+        .innerJoin(users, eq(feedFollows.userId, users.id))
+        .innerJoin(feeds, eq(feedFollows.feedId, feeds.id))
+        .where(eq(feedFollows.id, feedFollow.id));
+
+    return result[0];
+};
+
+export const getFeedbyURL = async (url: string) => {
+    const [data] = await db.select().from(feeds).where(eq(feeds.url, url)).limit(1);
+    return data;
+}
+
+export const getFeedFollowsForUser = async (
+    userId: string
+) => {
+    return await db
+        .select({
+            id: feedFollows.id,
+            createdAt: feedFollows.createdAt,
+            updatedAt: feedFollows.updatedAt,
+            userId: feedFollows.userId,
+            feedId: feedFollows.feedId,
+            userName: users.name,
+            feedName: feeds.name,
+        })
+        .from(feedFollows)
+        .innerJoin(
+            users,
+            eq(feedFollows.userId, users.id)
+        )
+        .innerJoin(
+            feeds,
+            eq(feedFollows.feedId, feeds.id)
+        )
+        .where(eq(feedFollows.userId, userId));
+};
+
+export const deleteFeedFollow = async (
+    userId: string,
+    feedUrl: string
+) => {
+    const feed = await getFeedbyURL(feedUrl);
+
+    if (!feed) {
+        throw new Error(`Feed with URL ${feedUrl} not found`);
+    }
+
+    await db.delete(feedFollows)
+        .where(
+            and(
+                eq(feedFollows.userId, userId),
+                eq(feedFollows.feedId, feed.id)
+            )
+        );
+};

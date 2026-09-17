@@ -1,12 +1,18 @@
+import { User } from "../db/schema.js";
+import { middlewareLoggedIn } from "../middleware.js";
 import { handlerAddFeed } from "./addfeed.js";
 import { handlerAgg } from "./agg.js";
 import { handlerFeeds } from "./feeds.js";
+import { handlerFollow, handlerUnfollow } from "./follow.js";
+import { handlerFollowing } from "./following.js";
 import { handlerLogin } from "./login.js";
 import { handlerRegister } from "./register.js";
 import { handlerReset } from "./reset.js";
 import { handlerUsers } from "./users.js";
 
 export type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
+
+export type UserCommandHandler = (cmdName: string, user: User, ...args: string[]) => Promise<void>;
 
 export type CommandsRegistry = Record<string, CommandHandler>;
 
@@ -30,7 +36,11 @@ export const createCommandsRegistry = (): CommandsRegistry => {
     registerCommand(registry, "reset", handlerReset);
     registerCommand(registry, "users", handlerUsers);
     registerCommand(registry, "agg", handlerAgg);
-    registerCommand(registry, "addfeed", handlerAddFeed);
+    registerCommand(registry, "addfeed", middlewareLoggedIn(handlerAddFeed));
     registerCommand(registry, "feeds", handlerFeeds);
+    registerCommand(registry, "follow", middlewareLoggedIn(handlerFollow));
+    registerCommand(registry, "unfollow", middlewareLoggedIn(handlerUnfollow));
+    registerCommand(registry, "following", middlewareLoggedIn(handlerFollowing));
+
     return registry;
 };
